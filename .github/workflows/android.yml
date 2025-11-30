@@ -13,22 +13,26 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # We use Java 17 to run the Gradle tool (required by Gradle 9.x)
-    # The app itself will still compile for older Android versions.
-    - name: set up JDK 17
+    # FIX 1: Revert to Java 8. 
+    # The old Gradle wrapper (which we are about to use) needs Java 8, not 17.
+    - name: set up JDK 8
       uses: actions/setup-java@v4
       with:
-        java-version: '17'
+        java-version: '8'
         distribution: 'temurin'
         cache: gradle
 
-    # FIX 1: We set the working directory to "./Agent"
-    # This is where your gradlew and build.gradle files actually are.
-    - name: Build with Gradle
+    # FIX 2: Grant permission to the file inside the Agent folder
+    - name: Grant execute permission for gradlew
       working-directory: ./Agent
-      run: gradle build --no-daemon
+      run: chmod +x gradlew
 
-    # FIX 2: We updated the path to find the APK inside the Agent folder
+    # FIX 3: Run the 'gradlew' script inside the Agent folder
+    # This ignores the system version (9.2.0) and downloads the correct old version.
+    - name: Build with Gradle Wrapper
+      working-directory: ./Agent
+      run: ./gradlew build --stacktrace
+
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
