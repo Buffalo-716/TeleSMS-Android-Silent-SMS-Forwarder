@@ -1,35 +1,15 @@
-name: Android CI
-
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
+name: Find My Files
+on: [push]
 jobs:
-  build:
+  debug:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     
-    # Still using Java 17 to satisfy the Gradle 9.0 requirement
-    - name: set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: gradle
-
-    # FIX: Run the command inside the correct sub-folder
-    - name: Build with Gradle
-      working-directory: ./YOUR_FOLDER_NAME  # <--- REPLACE THIS
-      run: gradle build --no-daemon
-
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: TeleSMS-Agent
-        # Note: You might need to add the folder name here too
-        path: YOUR_FOLDER_NAME/app/build/outputs/apk/debug/app-debug.apk
+    - name: List all files in repository
+      run: |
+        echo "--- ROOT DIRECTORY ---"
+        ls -la
+        echo "--- ONE LEVEL DEEP ---"
+        ls -R
         
