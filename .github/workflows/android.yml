@@ -13,22 +13,21 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # FIX 1: Revert to Java 8. 
-    # The old Gradle wrapper (which we are about to use) needs Java 8, not 17.
-    - name: set up JDK 8
+    # FIX: Changed to Java 11.
+    # The error log explicitly stated that the Android Plugin needs Java 11.
+    - name: set up JDK 11
       uses: actions/setup-java@v4
       with:
-        java-version: '8'
+        java-version: '11'
         distribution: 'temurin'
         cache: gradle
 
-    # FIX 2: Grant permission to the file inside the Agent folder
+    # Grant permission to the file inside the Agent folder
     - name: Grant execute permission for gradlew
       working-directory: ./Agent
       run: chmod +x gradlew
 
-    # FIX 3: Run the 'gradlew' script inside the Agent folder
-    # This ignores the system version (9.2.0) and downloads the correct old version.
+    # Run the 'gradlew' script inside the Agent folder
     - name: Build with Gradle Wrapper
       working-directory: ./Agent
       run: ./gradlew build --stacktrace
